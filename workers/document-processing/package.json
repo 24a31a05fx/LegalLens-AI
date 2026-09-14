@@ -1,0 +1,18 @@
+{
+  "name": "@legallens/document-processing-worker",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@legallens/ai": "*",
+    "@legallens/logger": "*",
+    "@legallens/security": "*",
+    "@legallens/shared-types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@legallens/api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "dev": "ts-node src/main.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@legallens/ai": "*",
+    "@legallens/logger": "*",
+    "@legallens/security": "*",
+    "@legallens/shared-types": "*",
+    "cors": "^2.8.5",
+    "express": "^5.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.2",
+    "typescript": "^5.4.5"
+  }
+}
