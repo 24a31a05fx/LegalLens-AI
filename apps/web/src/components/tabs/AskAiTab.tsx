@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CitationPill } from '../CitationViewer';
+import { getApiBaseUrl } from '../../lib/api-config';
 
 export interface ChatMessage {
   id: string;
@@ -54,7 +55,8 @@ export const AskAiTab: React.FC<{ projectId: string; documentId?: string }> = ({
       }
 
       // Send to backend API
-      const res = await fetch(`http://localhost:4000/api/v1/projects/${projectId}/conversations/direct`, {
+      const apiBase = getApiBaseUrl();
+      const res = await fetch(`${apiBase}/api/v1/projects/${projectId}/conversations/direct`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

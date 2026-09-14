@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CitationPill } from '../CitationViewer';
+import { getApiBaseUrl } from '../../lib/api-config';
 
 export interface ComparisonDiffItem {
   id: string;
@@ -95,14 +96,15 @@ export const CompareTab: React.FC<{
     const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
     if (!token || !projectId) return;
 
-    fetch(`http://localhost:4000/api/v1/projects/${projectId}/comparisons`, {
+    const apiBase = getApiBaseUrl();
+    fetch(`${apiBase}/api/v1/projects/${projectId}/comparisons`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.comparisons && data.comparisons.length > 0) {
           const comp = data.comparisons[0];
-          fetch(`http://localhost:4000/api/v1/projects/${projectId}/comparisons/${comp.id}`, {
+          fetch(`${apiBase}/api/v1/projects/${projectId}/comparisons/${comp.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
             .then((cRes) => (cRes.ok ? cRes.json() : null))

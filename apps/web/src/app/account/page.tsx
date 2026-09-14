@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getApiBaseUrl } from '../../lib/api-config';
 
 export default function AccountPage() {
   const [displayName, setDisplayName] = useState('LegalLens Workspace User');
@@ -306,7 +307,7 @@ export default function AccountPage() {
           </button>
 
           <a
-            href="http://localhost:4000/api/docs.json"
+            href={`${getApiBaseUrl()}/api/docs.json`}
             target="_blank"
             rel="noreferrer"
             className="btn btn-ghost"
@@ -316,7 +317,7 @@ export default function AccountPage() {
           </a>
 
           <a
-            href="http://localhost:4000/api/v1/metrics"
+            href={`${getApiBaseUrl()}/api/v1/metrics`}
             target="_blank"
             rel="noreferrer"
             className="btn btn-ghost"

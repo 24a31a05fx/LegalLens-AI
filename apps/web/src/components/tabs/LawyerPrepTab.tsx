@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CitationPill } from '../CitationViewer';
+import { getApiBaseUrl } from '../../lib/api-config';
 
 export interface LawyerPrepData {
   id: string;
@@ -49,7 +50,8 @@ export const LawyerPrepTab: React.FC<{
     const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
     if (!token || !projectId) return;
 
-    fetch(`http://localhost:4000/api/v1/projects/${projectId}/lawyer-prep`, {
+    const apiBase = getApiBaseUrl();
+    fetch(`${apiBase}/api/v1/projects/${projectId}/lawyer-prep`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => (res.ok ? res.json() : null))
@@ -85,8 +87,9 @@ export const LawyerPrepTab: React.FC<{
 
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
+      const apiBase = getApiBaseUrl();
       if (token && projectId && data.id && !data.id.startsWith('lp_draft')) {
-        await fetch(`http://localhost:4000/api/v1/projects/${projectId}/lawyer-prep/${data.id}`, {
+        await fetch(`${apiBase}/api/v1/projects/${projectId}/lawyer-prep/${data.id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -112,8 +115,9 @@ export const LawyerPrepTab: React.FC<{
 
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
+      const apiBase = getApiBaseUrl();
       if (token && projectId && data.id && !data.id.startsWith('lp_draft')) {
-        await fetch(`http://localhost:4000/api/v1/projects/${projectId}/lawyer-prep/${data.id}`, {
+        await fetch(`${apiBase}/api/v1/projects/${projectId}/lawyer-prep/${data.id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

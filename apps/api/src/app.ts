@@ -18,7 +18,8 @@ export function createApp(): Express {
 
   const config = loadConfig();
   const allowedOrigins = config.CORS_ORIGINS.split(',').map(o => o.trim()).filter(o => o.length > 0);
-  app.use(cors({ origin: allowedOrigins }));
+  const corsOrigin = allowedOrigins.includes('*') ? true : allowedOrigins;
+  app.use(cors({ origin: corsOrigin, credentials: true }));
   app.use(express.json({ limit: '50mb' }));
   app.use(requestIdMiddleware);
 

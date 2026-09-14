@@ -10,6 +10,7 @@ import { CompareTab } from '../components/tabs/CompareTab';
 import { LawyerPrepTab } from '../components/tabs/LawyerPrepTab';
 import { UploadModal } from '../components/UploadModal';
 import { ExportModal } from '../components/ExportModal';
+import { getApiBaseUrl } from '../lib/api-config';
 
 export type WorkspaceTab =
   | 'overview'
@@ -28,11 +29,9 @@ interface UploadedDocPayload {
 
 export default function WorkspacePage() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('overview');
-
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
 
-  // Active project & documents state
   const [project, setProject] = useState({
     id: 'proj_commercial_license',
     name: 'Commercial IP & Distribution License',
@@ -58,8 +57,9 @@ export default function WorkspacePage() {
 
     const params = new URLSearchParams(window.location.search);
     const queryProjId = params.get('projectId');
+    const apiBase = getApiBaseUrl();
 
-    fetch('http://localhost:4000/api/v1/projects', {
+    fetch(`${apiBase}/api/v1/projects`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => (res.ok ? res.json() : null))
@@ -76,7 +76,7 @@ export default function WorkspacePage() {
             document_type: selectedProj.document_type || 'Commercial Agreement',
           });
 
-          fetch(`http://localhost:4000/api/v1/projects/${selectedProj.id}/documents`, {
+          fetch(`${apiBase}/api/v1/projects/${selectedProj.id}/documents`, {
             headers: { Authorization: `Bearer ${token}` },
           })
             .then((dRes) => (dRes.ok ? dRes.json() : null))
@@ -105,7 +105,8 @@ export default function WorkspacePage() {
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
       if (!token) return;
-      const res = await fetch(`http://localhost:4000/api/v1/projects/${project.id}/documents/${document.id}/analyses`, {
+      const apiBase = getApiBaseUrl();
+      const res = await fetch(`${apiBase}/api/v1/projects/${project.id}/documents/${document.id}/analyses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

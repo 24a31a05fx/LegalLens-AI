@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getApiBaseUrl } from '../lib/api-config';
 
 interface ExportModalProps {
   projectId: string;
@@ -44,7 +45,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       if (!token) {
         throw new Error('Please sign in before generating an export.');
       }
-      const res = await fetch(`http://localhost:4000/api/v1/projects/${projectId}/exports`, {
+      const apiBase = getApiBaseUrl();
+      const res = await fetch(`${apiBase}/api/v1/projects/${projectId}/exports`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

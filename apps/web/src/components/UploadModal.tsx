@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { getApiBaseUrl } from '../lib/api-config';
 
 interface UploadModalProps {
   projectId: string;
@@ -84,7 +85,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           if (!token) {
             throw new Error('Please sign in before uploading a document.');
           }
-          const res = await fetch(`http://localhost:4000/api/v1/projects/${projectId}/documents`, {
+          const apiBase = getApiBaseUrl();
+          const res = await fetch(`${apiBase}/api/v1/projects/${projectId}/documents`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CitationPill } from '../CitationViewer';
+import { getApiBaseUrl } from '../../lib/api-config';
 
 export interface DateItem {
   id: string;
@@ -37,9 +38,10 @@ export const KeyDatesTab: React.FC<{
         const token = typeof window !== 'undefined' ? localStorage.getItem('legallens_auth_token') : null;
         if (!token) return;
 
+        const apiBase = getApiBaseUrl();
         // 1. Check for existing dates analysis with findings
         const getRes = await fetch(
-          `http://localhost:4000/api/v1/projects/${projectId}/documents/${documentId}/analyses?type=dates&include_findings=true`,
+          `${apiBase}/api/v1/projects/${projectId}/documents/${documentId}/analyses?type=dates&include_findings=true`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -62,7 +64,7 @@ export const KeyDatesTab: React.FC<{
         // 2. If no dates analysis exists yet, generate one
         if (dateFindings.length === 0) {
           const postRes = await fetch(
-            `http://localhost:4000/api/v1/projects/${projectId}/documents/${documentId}/analyses`,
+            `${apiBase}/api/v1/projects/${projectId}/documents/${documentId}/analyses`,
             {
               method: 'POST',
               headers: {

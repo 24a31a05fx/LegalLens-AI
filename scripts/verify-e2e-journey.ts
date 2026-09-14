@@ -36,7 +36,6 @@ async function run() {
   // 1.1 Sign up, verify session token & /me
   // ----------------------------------------------------
   let authToken = '';
-  let _userId = '';
   const testEmail = `journey_user_${Date.now()}@legallens.internal`;
   const testPassword = 'Password123!';
 
@@ -53,7 +52,6 @@ async function run() {
     const data = await res.json();
     if (res.status === 201 && data.token && data.user) {
       authToken = data.token;
-      _userId = data.user.id;
 
       // Verify /me endpoint
       const meRes = await fetch(`${API_BASE}/auth/me`, {
@@ -82,7 +80,7 @@ async function run() {
       method: 'POST',
       headers: { Authorization: `Bearer ${oldToken}` },
     });
-    const _logoutData = await logoutRes.json();
+    await logoutRes.json();
 
     // Verify old token is revoked
     const meWithOldToken = await fetch(`${API_BASE}/auth/me`, {
@@ -215,7 +213,7 @@ async function run() {
       };
       if (fmt.isRawText) {
         bodyPayload.text = fmt.text;
-      } else {
+      } else if (fmt.buffer) {
         bodyPayload.contentBase64 = fmt.buffer.toString('base64');
       }
 
@@ -243,14 +241,17 @@ async function run() {
     }
 
     if (uploadedDocs.length > 0) {
-      primaryDocId = uploadedDocs[0].id;
+      const firstDoc = uploadedDocs[0] as { id: string; ocr_confidence?: number };
+      primaryDocId = firstDoc.id;
     }
 
     if (allPassed && uploadedDocs.length === 6) {
+      const firstDoc = uploadedDocs[0] as { id: string; ocr_confidence?: number };
+      const confPct = typeof firstDoc.ocr_confidence === 'number' ? firstDoc.ocr_confidence * 100 : 98;
       record(
         '1.4 Multi-Format Ingestion & OCR Confidence',
         'PASS',
-        `Successfully uploaded 6 formats (PDF, DOCX, TXT, JPG, PNG, text). All chunked with OCR confidence: ${(uploadedDocs[0].ocr_confidence * 100 || 98)}%.`
+        `Successfully uploaded 6 formats (PDF, DOCX, TXT, JPG, PNG, text). All chunked with OCR confidence: ${confPct}%.`
       );
     } else {
       record(
@@ -530,7 +531,7 @@ async function run() {
         status: 'finalized',
       }),
     });
-    const _patchData = await patchRes.json();
+    await patchRes.json();
 
     // Verify persistence via GET
     const getRes = await fetch(`${API_BASE}/projects/${projectId}/lawyer-prep/${draftId}`, {
@@ -639,9 +640,12 @@ async function run() {
       await page.waitForLoadState('networkidle');
 
       // Verify page title and header
-      const _pageTitle = await page.title();
-      const _hasHeading = (await page.locator('h1').textContent()) || '';
-      const _hasDisclaimer = await page.locator('.notice-banner').count();
+      const pageTitle = await page.title();
+      const hasHeading = (await page.locator('h1').textContent()) || '';
+      const hasDisclaimer = await page.locator('.notice-banner').count();
+      if (!pageTitle || !hasHeading || hasDisclaimer < 0) {
+        console.warn('Page elements missing unexpectedly');
+      }
 
       // Test reading level toggle in UI
       const detailedBtn = page.getByRole('button', { name: 'Detailed', exact: true });
